@@ -5,6 +5,7 @@ import { connectMongoDB } from './db/connectMongoDB.js';
 import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import categoriesRoutes from './routes/categoriesRoutes.js';
 // import notesRoutes from './routes/notesRoutes.js';
 import { errors } from 'celebrate';
 // import authRoutes from './routes/authRoutes.js';
@@ -22,13 +23,14 @@ app.use(cookieParser());
 // app.get('/test-error', () => {
 //   throw new Error('Simulated server error');
 // });
-
+app.use(categoriesRoutes);
 // app.use(authRoutes);
 // app.use(notesRoutes);
 // app.use(userRoutes);
 app.use(notFoundHandler);
 app.use(errors());
 app.use(errorHandler);
+
 
 await connectMongoDB();
 
