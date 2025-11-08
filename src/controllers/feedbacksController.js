@@ -1,6 +1,6 @@
 import { Feedback } from '../models/feedback.js';
 import { Good } from '../models/good.js';
-
+import Category from "../models/сategories.js";
 export const createFeedback = async (req, res, next) => {
     try {
         const { author, rate, description } = req.body;
