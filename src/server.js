@@ -12,6 +12,8 @@ import { errors } from 'celebrate';
 import cookieParser from 'cookie-parser';
 // import userRoutes from './routes/userRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import subscriptionsRoutes from './routes/subscriptionsRoutes.js';
+import feedbacksRoutes from './routes/feedbacksRoutes.js';
 const PORT = process.env.PORT || 3030;
 const app = express();
 
@@ -26,6 +28,8 @@ app.use(cookieParser());
 
 app.use(authRoutes);
 app.use(goodsRoutes);
+app.use(subscriptionsRoutes);
+app.use(feedbacksRoutes);
 // app.use(userRoutes);
 app.use(notFoundHandler);
 app.use(errors());

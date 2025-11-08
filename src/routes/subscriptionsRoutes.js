@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { celebrate } from 'celebrate';
 import {createSubscription} from '../controllers/subscriptionsController.js';
-import { createSubscriptionSchema } from '../validations/subscriptionsValidation.js';
+import { createSubscriptionSchema } from '../validation/subscriptionsValidation.js';
 
 const router = Router();
 
