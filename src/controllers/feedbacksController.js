@@ -1,6 +1,8 @@
 import { Feedback } from '../models/feedback.js';
 import { Good } from '../models/good.js';
 import Category from "../models/сategories.js";
+import createHttpError from "http-errors";
+
 export const createFeedback = async (req, res, next) => {
     try {
         const { author, rate, description } = req.body;
@@ -17,10 +19,10 @@ export const createFeedback = async (req, res, next) => {
             .select('category'); 
             
         if (!good) {
-             return res.status(404).json({ message: `Товар (Good) з ID ${productId} не знайдено.` });
+             return (createHttpError(404,`Товар (Good) з ID ${productId} не знайдено.`));
         }
         if (!good.category || !good.category.name) {
-            return res.status(500).json({ message: 'Назву категорії не вдалося знайти для цього товару (Good). Перевірте зв\'язок Category.' });
+            return (createHttpError(404, 'Назву категорії не вдалося знайти для цього товару (Good). Перевірте зв\'язок Category.'));
         }
         
         const categoryName = good.category.name; 

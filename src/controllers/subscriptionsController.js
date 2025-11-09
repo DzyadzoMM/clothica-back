@@ -1,4 +1,4 @@
-import { Subscription } from '../models/subscriptions.js';
+import { Subscription } from '../models/subscription.js';
 import createHttpError from 'http-errors';
 
 export const createSubscription = async (req, res) => {
