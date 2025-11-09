@@ -44,12 +44,28 @@ export const createFeedback = async (req, res, next) => {
 };
 
 export const getFeedbacks = async (req, res) => {
-    const feedback = await Feedback.find({})
+    const feedbacks = await Feedback.find({})
         .populate('productId', 'name')
         .sort({ date: -1 }); 
 
-    res.status(200).json({
-        count: feedback.length,
-        feedback,
-    });
+    res.status(200).json(feedbacks);
 };
+
+export const getFeedbacksByProduct = async (req, res, next) => {
+    try {
+        const { productId } = req.params;
+
+        const good = await Good.findById(productId);
+        if (!good) {
+            return next(createHttpError(404, `Товар (Good) з ID ${productId} не знайдено для пошуку відгуків.`));
+        }
+
+        const feedbacks = await Feedback.find({ productId: productId }).sort({ date: -1 });
+
+        res.status(200).json(feedbacks);
+        
+    } catch (err) {
+        next(err);
+    }
+};
+

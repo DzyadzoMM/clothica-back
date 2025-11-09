@@ -13,3 +13,9 @@ export const createFeedbackSchema = {
       productId:Joi.string().required(),
     }),
 };
+
+export const getFeedbacksByProductSchema = {
+  [Segments.PARAMS]: Joi.object({
+      productId:Joi.string().required(),
+    }),
+};
