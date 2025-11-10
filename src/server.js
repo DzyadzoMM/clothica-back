@@ -12,6 +12,7 @@ import userRoutes from './routes/userRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import subscriptionsRoutes from './routes/subscriptionsRoutes.js';
 import feedbacksRoutes from './routes/feedbacksRoutes.js';
+import categoriesRoutes from './routes/categoriesRoutes.js';
 const PORT = process.env.PORT || 3030;
 const app = express();
 
@@ -29,6 +30,7 @@ app.use(goodsRoutes);
 app.use(subscriptionsRoutes);
 app.use(feedbacksRoutes);
 app.use(userRoutes);
+app.use(categoriesRoutes);
 app.use(notFoundHandler);
 app.use(errors());
 app.use(errorHandler);
