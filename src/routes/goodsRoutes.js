@@ -5,10 +5,10 @@ import {
   goodIdSchema,
 } from '../validation/goodsValidation.js';
 import { getAllGoods, getGoodById } from '../controllers/goodsController.js';
-// import { authenticate } from '../middleware/authenticate.js';
+
 const router = Router();
-// router.use('/goods', authenticate);
-router.get('/goods', celebrate(getAllGoodsSchema), getAllGoods);
-router.get('/goods/:goodId', celebrate(goodIdSchema), getGoodById);
+
+router.get('/api/goods', celebrate(getAllGoodsSchema), getAllGoods);
+router.get('/api/goods/:goodId', celebrate(goodIdSchema), getGoodById);
 
 export default router;
