@@ -7,7 +7,7 @@ import { authenticate } from '../middleware/authenticate.js';
 
 const router = Router();
 
-router.get('api/users/me', authenticate, getCurrentUser);
-router.patch('api/users/me', authenticate, updateCurrentUser);
+router.get('/api/users/me', authenticate, getCurrentUser);
+router.patch('/api/users/me', authenticate, updateCurrentUser);
 
 export default router;
