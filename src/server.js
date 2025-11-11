@@ -13,8 +13,13 @@ import authRoutes from './routes/authRoutes.js';
 import subscriptionsRoutes from './routes/subscriptionsRoutes.js';
 import feedbacksRoutes from './routes/feedbacksRoutes.js';
 import categoriesRoutes from './routes/categoriesRoutes.js';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+
 const PORT = process.env.PORT || 3030;
 const app = express();
+
+const swaggerDocument = YAML.load('./swagger.yaml');
 
 app.use(logger);
 app.use(express.json());
@@ -24,7 +29,7 @@ app.use(cookieParser());
 // app.get('/test-error', () => {
 //   throw new Error('Simulated server error');
 // });
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(authRoutes);
 app.use(goodsRoutes);
 app.use(subscriptionsRoutes);
