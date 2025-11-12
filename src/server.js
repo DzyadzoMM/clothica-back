@@ -13,6 +13,7 @@ import authRoutes from './routes/authRoutes.js';
 import subscriptionsRoutes from './routes/subscriptionsRoutes.js';
 import feedbacksRoutes from './routes/feedbacksRoutes.js';
 import categoriesRoutes from './routes/categoriesRoutes.js';
+import ordersRoutes from './routes/ordersRoutes.js'
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 
@@ -36,6 +37,7 @@ app.use(subscriptionsRoutes);
 app.use(feedbacksRoutes);
 app.use(userRoutes);
 app.use(categoriesRoutes);
+app.use(ordersRoutes);
 app.use(notFoundHandler);
 app.use(errors());
 app.use(errorHandler);
