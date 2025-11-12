@@ -10,7 +10,13 @@ export const getCurrentUser = async (req, res) => {
 
 export const updateCurrentUser = async (req, res) => {
   try {
-    const allowedFields = ['firstName', 'lastName', 'city', 'postOfficeNum'];
+    const allowedFields = [
+      'firstName',
+      'lastName',
+      'phone',
+      'city',
+      'postOfficeNum',
+    ];
     const updates = {};
 
     for (const field of allowedFields) {

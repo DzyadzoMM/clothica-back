@@ -71,7 +71,7 @@ components:
           type: integer
 
 paths:
-  /auth/register:
+  /api/auth/register:
     post:
       summary: Register a new user
       requestBody:
@@ -93,7 +93,7 @@ paths:
         400:
           description: Validation error
 
-  /auth/login:
+  /api/auth/login:
     post:
       summary: User login
       requestBody:
@@ -120,7 +120,7 @@ paths:
         401:
           description: Invalid credentials
 
-  /auth/logout:
+  /api/auth/logout:
     post:
       summary: Logout user
       responses:
