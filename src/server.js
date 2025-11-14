@@ -24,8 +24,10 @@ const swaggerDocument = YAML.load('./swagger.yaml');
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://clothica-front.vercel.app/',
+  'https://clothica-front.vercel.app',
 ];
+
+app.set("trust proxy", 1);
 
 app.use(logger);
 app.use(express.json());
@@ -56,6 +58,7 @@ app.use(errorHandler);
 
 await connectMongoDB();
 
-app.listen(PORT, () => {
+app.listen(PO
+RT, () => {
   console.log(`server is running on port  ${PORT}`);
 });
