@@ -24,7 +24,7 @@ const swaggerDocument = YAML.load('./swagger.yaml');
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://clothica-front.vercel.app/',
+  'https://clothica-front.vercel.app',
 ];
 
 app.use(logger);
