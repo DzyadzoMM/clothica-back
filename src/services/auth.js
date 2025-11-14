@@ -22,6 +22,7 @@ export const setSessionCookies = (res, session) => {
     httpOnly: true,
     secure: true,
     sameSite: 'none',
+    path: '/',
     maxAge: FIFTEEN_MINUTES,
   });
 
@@ -29,6 +30,7 @@ export const setSessionCookies = (res, session) => {
     httpOnly: true,
     secure: true,
     sameSite: 'none',
+    path: '/',
     maxAge: ONE_DAY,
   });
 
@@ -36,6 +38,7 @@ export const setSessionCookies = (res, session) => {
     httpOnly: true,
     secure: true,
     sameSite: 'none',
+    path: '/',
     maxAge: ONE_DAY,
   });
 };

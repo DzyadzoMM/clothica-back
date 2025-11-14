@@ -27,6 +27,8 @@ const allowedOrigins = [
   'https://clothica-front.vercel.app',
 ];
 
+app.set('trust proxy', 1);
+
 app.use(logger);
 app.use(express.json());
 // app.use(cors());
