@@ -14,7 +14,8 @@ const cartSchema = new Schema(
             required: true,
         },
         size: {
-            type: SIZES,
+            type: String, // Краще String, якщо SIZES - це масив рядків
+            enum: SIZES, // Використовуйте enum для обмеження значень
             required: true,
         },
         amount: {
@@ -47,7 +48,7 @@ const orderSchema = new Schema(
         }],
         total: {
             type: Number,
-            required: true, // This total is provided by the controller
+            required: true, // Це загальна сума, розрахована контролером
         },
         orderDate: {
             type: String,
@@ -57,7 +58,8 @@ const orderSchema = new Schema(
             unique: true,
         },
         status: {
-            type: STATUS,
+            type: String, // Краще String, якщо STATUS - це масив рядків
+            enum: STATUS, // Використовуйте enum для обмеження значень
             required: true,
             default: "У процесі",
         },
