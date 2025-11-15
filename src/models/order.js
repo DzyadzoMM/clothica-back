@@ -14,7 +14,8 @@ const cartSchema = new Schema(
             required: true,
         },
         size: {
-            type: SIZES,
+            type: String, 
+            enum: SIZES,  
             required: true,
         },
         amount: {
@@ -47,7 +48,7 @@ const orderSchema = new Schema(
         }],
         total: {
             type: Number,
-            required: true, // This total is provided by the controller
+            required: true, 
         },
         orderDate: {
             type: String,
@@ -57,7 +58,8 @@ const orderSchema = new Schema(
             unique: true,
         },
         status: {
-            type: STATUS,
+            type: String, 
+            enum: STATUS, 
             required: true,
             default: "У процесі",
         },
