@@ -1,4 +1,4 @@
-import { Order } from "../models/.order.js";
+import { Order } from "../models/order.js";
 
 export const getAllOrders = async (req, res) => {
     // Припускаємо, що аутентифікований користувач знаходиться у req.user._id
