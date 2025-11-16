@@ -1,5 +1,5 @@
-import { model, Schema } from 'mongoose';
-import { SIZES } from '../constants/sizes.js';
+import { model, Schema } from "mongoose";
+import { SIZES } from "../constants/sizes.js";
 
 const priceSchema = new Schema(
   {
@@ -12,12 +12,12 @@ const priceSchema = new Schema(
       type: String,
       required: true,
       trim: true,
-      enum: ['грн'],
-    },
+      enum: ["грн"],
+    }
   },
   {
     _id: false,
-  },
+  }
 );
 
 const goodSchema = new Schema(
@@ -27,53 +27,46 @@ const goodSchema = new Schema(
       required: true,
       trim: true,
     },
-
     category: {
       type: Schema.Types.ObjectId,
-      ref: 'Category',
+      ref: "Category",
       required: true,
     },
-
     image: {
       type: String,
       required: true,
+      match: [
+        /^(https?):\/\/[^\s$.?#].[^\s]*$/,
+        "Please use a valid URL format for the image (e.g., http://example.com/image.jpg)"
+      ],
     },
-
     price: {
       type: priceSchema,
       required: true,
     },
-
     size: {
-      type: [String],
-      enum: SIZES,
+      type: SIZES,
       required: true,
     },
-
     description: {
       type: String,
       required: true,
     },
-
-    feedbacks: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Feedback',
-        default: [],
-      },
-    ],
-
+    feedbacks: [{
+      type: Schema.Types.ObjectId,
+      ref: "Feedback",
+      required: true,
+      default: [],
+    }],
     prevDescription: {
       type: String,
       required: true,
     },
-
     gender: {
       type: String,
       required: true,
-      enum: ['man', 'woman', 'unisex'],
+      enum: ["men", "women", "unisex"],
     },
-
     characteristics: {
       type: [String],
       required: true,
@@ -85,4 +78,4 @@ const goodSchema = new Schema(
   },
 );
 
-export const Good = model('Good', goodSchema);
+export const Good = model("Good", goodSchema);
