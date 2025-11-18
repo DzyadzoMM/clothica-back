@@ -25,15 +25,36 @@ export const getAllGoods = async (req, res, next) => {
       filter.category = categoryId;
     }
 
+    // if (size) {
+    //   let sizesArray = [];
+
+    //   if (Array.isArray(size)) {
+    //     sizesArray = size;
+    //   } else {
+    //     sizesArray = [size];
+    //   }
+    //   const normalizedSizes = sizesArray.map((s) => s.toUpperCase());
+    //   filter.size = { $in: normalizedSizes };
+    // }
+
     if (size) {
       let sizesArray = [];
       if (Array.isArray(size)) {
         sizesArray = size;
       } else if (typeof size === 'string') {
-        sizesArray = size.split(',').map((s) => s.trim());
+        sizesArray = [size];
       }
       filter.size = { $in: sizesArray.map((s) => s.toUpperCase()) };
     }
+
+    // if (size) {
+    //   const arr = Array.isArray(size) ? size : size.split(',');
+    //   console.log('RAW sizes:', size);
+    //   console.log('Parsed sizes array:', arr);
+
+    //   const normalizedSizes = arr.map((s) => s.toUpperCase().trim());
+    //   filter.size = { $in: normalizedSizes };
+    // }
 
     if (minPrice || maxPrice) {
       filter['price.value'] = {};
