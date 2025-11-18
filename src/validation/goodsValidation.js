@@ -7,7 +7,7 @@ export const getAllGoodsSchema = {
     page: Joi.number().integer().min(1).default(1),
     perPage: Joi.number().integer().min(1).max(12).default(12),
     categoryId: Joi.string(),
-    sizes: Joi.array().items(Joi.string().valid(...SIZES)),
+    size: Joi.array().items(Joi.string().valid(...SIZES)),
     minPrice: Joi.number().integer().min(0),
     maxPrice: Joi.number().integer().positive(),
     gender: Joi.string().valid('man', 'women', 'unisex', 'all'),

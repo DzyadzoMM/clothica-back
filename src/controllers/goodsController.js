@@ -7,11 +7,13 @@ export const getAllGoods = async (req, res, next) => {
       page = 1,
       perPage = 12,
       categoryId,
-      sizes,
+      size,
       minPrice,
       maxPrice,
       gender,
     } = req.query;
+
+    console.log('Query parameters:', req.query);
 
     const pageNum = Number(page);
     const perPageNum = Number(perPage);
@@ -22,11 +24,15 @@ export const getAllGoods = async (req, res, next) => {
     if (categoryId) {
       filter.category = categoryId;
     }
-    console.log(sizes);
-    if (sizes) {
-      const normalizedSizes = sizes.map((s) => s.toUpperCase());
-      filter.size = { $in: normalizedSizes };
-      console.log(normalizedSizes);
+
+    if (size) {
+      let sizesArray = [];
+      if (Array.isArray(size)) {
+        sizesArray = size;
+      } else if (typeof size === 'string') {
+        sizesArray = size.split(',').map((s) => s.trim());
+      }
+      filter.size = { $in: sizesArray.map((s) => s.toUpperCase()) };
     }
 
     if (minPrice || maxPrice) {
