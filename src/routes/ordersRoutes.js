@@ -6,7 +6,6 @@ import { authenticate } from "../middleware/authenticate.js";
 
 const router = Router();
 
-router.use("/api/orders", authenticate);
 
 router.get("/api/orders", getAllOrders);
 router.post("/api/orders", celebrate(createOrderSchema), createOrder);
