@@ -10,7 +10,7 @@ const objectIdValidator = (value, helpers) => {
 
 export const cartItemSchema = {
     [Segments.BODY]: Joi.object({
-        goodId: Joi.string().custom(objectIdValidator).required(),
+        goodId: Joi.string().required(),
         size: Joi.string().valid(...SIZES),
         amount: Joi.number().integer().positive().min(1).default(1),
     })
