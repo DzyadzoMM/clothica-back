@@ -1,3 +1,5 @@
+
+
 import { model, Schema } from "mongoose";
 import { STATUS } from "../constants/status.js";
 import { SIZES } from "../constants/sizes.js";
@@ -15,7 +17,7 @@ const cartSchema = new Schema(
         },
         size: {
             type: String, 
-            enum: SIZES,  
+            enum: SIZES,
             required: true,
         },
         amount: {
@@ -59,7 +61,7 @@ const orderSchema = new Schema(
         },
         status: {
             type: String, 
-            enum: STATUS, 
+            enum: STATUS,
             required: true,
             default: "У процесі",
         },
@@ -67,7 +69,7 @@ const orderSchema = new Schema(
             userId: {
                 type: Schema.Types.ObjectId,
                 ref: "User",
-                required: true,
+                required: false, 
             },
             firstName: {
                 type: String,
@@ -107,7 +109,6 @@ const orderSchema = new Schema(
 );
 
 orderSchema.pre("save", function (next) {
-
     if (this.isNew) {
         const now = new Date();
         const day = String(now.getDate()).padStart(2, "0");
@@ -119,7 +120,6 @@ orderSchema.pre("save", function (next) {
         const uniqueId = `№${generateRandomString(7)}`;
         this.orderNumber = uniqueId;
     }
-
     next();
 });
 
