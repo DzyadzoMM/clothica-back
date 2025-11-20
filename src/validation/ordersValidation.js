@@ -8,13 +8,19 @@ const objectIdValidator = (value, helpers) => {
     return !isValidId ? helpers.message("Invalid ID value!") : value;
 };
 
-export const cartItemSchema = {
-    [Segments.BODY]: Joi.object({
-        goodId: Joi.string().required(),
-        size: Joi.string().valid(...SIZES),
-        amount: Joi.number().integer().positive().min(1).default(1),
-    })
-};
+// export const cartItemSchema = {
+//     [Segments.BODY]: Joi.object({
+//         goodId: Joi.string().required(),
+//         size: Joi.string().valid(...SIZES),
+//         amount: Joi.number().integer().positive().min(1).default(1),
+//     })
+// };
+
+export const cartItemSchema = Joi.object({
+    goodId: Joi.string().required(),
+    size: Joi.string().valid(...SIZES),
+    amount: Joi.number().integer().positive().min(1).default(1),
+});
 
 export const createOrderSchema = {
     [Segments.BODY]: Joi.object({
