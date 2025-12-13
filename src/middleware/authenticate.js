@@ -1,20 +1,36 @@
+
 import createHttpError from 'http-errors';
 import { Session } from '../models/session.js';
 import { User } from '../models/user.js';
 
 export const authenticate = async (req, res, next) => {
-  if (!req.cookies.accessToken) {
-    next(createHttpError(401, 'Missing access token'));
-    return;
+  let accessToken = null;
+
+  if (req.cookies.accessToken) {
+    accessToken = req.cookies.accessToken;
   }
 
+  const authHeader = req.headers.authorization;
+  
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const headerToken = authHeader.split(' ')[1];
+    
+    if (headerToken) {
+      accessToken = headerToken;
+    }
+  }
+
+  if (!accessToken) {
+    console.error('[AUTH MIDDLEWARE] Токен не знайдено ні в Cookies, ні в Authorization Header.');
+    return next(createHttpError(401, 'Missing access token'));
+  }
+  
   const session = await Session.findOne({
-    accessToken: req.cookies.accessToken,
+    accessToken: accessToken,
   });
 
   if (!session) {
-    next(createHttpError(401, 'Session not found'));
-    return;
+    return next(createHttpError(401, 'Session not found'));
   }
 
   const isAccessTokenExpired =
@@ -27,11 +43,9 @@ export const authenticate = async (req, res, next) => {
   const user = await User.findById(session.userId);
 
   if (!user) {
-    next(createHttpError(401));
-    return;
+    return next(createHttpError(401));
   }
 
   req.user = user;
-
   next();
 };
