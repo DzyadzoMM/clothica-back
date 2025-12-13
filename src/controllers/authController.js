@@ -67,7 +67,25 @@ export const loginUser = async (req, res, next) => {
 };
 
 
-export const logoutUser = async (req, res) => {
+export const logoutUser = async (req, res, next) => {
+  const isMobileClient = req.headers['x-client-type'] === 'mobile';
+  
+  if (isMobileClient) {
+    const { refreshToken } = req.body; 
+
+    if (!refreshToken) {
+        return next(createHttpError(400, 'Refresh token is required for mobile logout'));
+    }
+
+    const session = await Session.findOne({ refreshToken });
+
+    if (session) {
+        await Session.deleteOne({ _id: session._id });
+    }
+    
+    return res.status(204).send(); 
+  }
+
   const { sessionId } = req.cookies;
 
   if (sessionId) {
@@ -78,31 +96,47 @@ export const logoutUser = async (req, res) => {
   res.clearCookie('accessToken');
   res.clearCookie('refreshToken');
 
-  res.status(204).send();
+  return res.status(204).send();
 };
 
 
 export const refreshUserSession = async (req, res, next) => {
+    const isMobileClient = req.headers['x-client-type'] === 'mobile';
     
-    const session = await Session.findOne({
-        _id: req.cookies.sessionId,
-        refreshToken: req.cookies.refreshToken,
-    });
+    let sessionId, refreshToken;
+
+    if (isMobileClient) {
+        refreshToken = req.body.refreshToken;
+        if (!refreshToken) {
+            return next(createHttpError(400, 'Refresh token is missing in body for mobile client'));
+        }
+    } else {
+        sessionId = req.cookies.sessionId;
+        refreshToken = req.cookies.refreshToken;
+
+        if (!sessionId || !refreshToken) {
+            return next(createHttpError(400, 'Session ID or Refresh Token missing in cookies'));
+        }
+    }
+
+    const sessionSearchQuery = isMobileClient 
+        ? { refreshToken: refreshToken } 
+        : { _id: sessionId, refreshToken: refreshToken };
+
+    const session = await Session.findOne(sessionSearchQuery);
 
     if (!session) {
-        return next(createHttpError(401, 'Session not found'));
+        return next(createHttpError(401, 'Session not found or invalid refresh token'));
     }
 
     const isSessionTokenExpired = new Date() > new Date(session.refreshTokenValidUntil);
 
     if (isSessionTokenExpired) {
+        await Session.deleteOne({ _id: session._id });
         return next(createHttpError(401, 'Session token expired'));
     }
 
-    await Session.deleteOne({
-        _id: req.cookies.sessionId,
-        refreshToken: req.cookies.refreshToken,
-    });
+    await Session.deleteOne({ _id: session._id }); 
 
     const newSession = await createSession(session.userId);
 
