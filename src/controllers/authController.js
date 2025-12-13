@@ -5,6 +5,25 @@ import createHttpError from 'http-errors';
 import { User } from '../models/user.js';
 import { createSession, setSessionCookies } from '../services/auth.js';
 import { Session } from '../models/session.js';
+
+
+const sendAuthResponse = (req, res, user, newSession, status) => {
+  
+  const isMobileClient = req.headers['x-client-type'] === 'mobile';
+
+  if (isMobileClient) {
+    return res.status(status).json({
+      ...user.toObject(), 
+      accessToken: newSession.accessToken,
+      refreshToken: newSession.refreshToken,
+    });
+  } else {
+    setSessionCookies(res, newSession);
+    return res.status(status).json(user);
+  }
+};
+
+
 export const registerUser = async (req, res, next) => {
   const { phone, password, firstName } = req.body;
 
@@ -20,11 +39,12 @@ export const registerUser = async (req, res, next) => {
     phone,
     password: hashedPassword,
   });
+  
   const newSession = await createSession(newUser._id);
 
-  setSessionCookies(res, newSession);
-  res.status(201).json(newUser);
+  return sendAuthResponse(req, res, newUser, newSession, 201);
 };
+
 
 export const loginUser = async (req, res, next) => {
   const { phone, password } = req.body;
@@ -42,9 +62,10 @@ export const loginUser = async (req, res, next) => {
   await Session.deleteOne({ userId: user._id });
 
   const newSession = await createSession(user._id);
-  setSessionCookies(res, newSession);
-  res.status(200).json(user);
+
+  return sendAuthResponse(req, res, user, newSession, 200);
 };
+
 
 export const logoutUser = async (req, res) => {
   const { sessionId } = req.cookies;
@@ -60,38 +81,35 @@ export const logoutUser = async (req, res) => {
   res.status(204).send();
 };
 
+
 export const refreshUserSession = async (req, res, next) => {
-  // 1. Знаходимо поточну сесію за id сесії та рефреш токеном
-  const session = await Session.findOne({
-    _id: req.cookies.sessionId,
-    refreshToken: req.cookies.refreshToken,
-  });
+    
+    const session = await Session.findOne({
+        _id: req.cookies.sessionId,
+        refreshToken: req.cookies.refreshToken,
+    });
 
-  // 2. Якщо такої сесії нема, повертаємо помилку
-  if (!session) {
-    return next(createHttpError(401, 'Session not found'));
-  }
+    if (!session) {
+        return next(createHttpError(401, 'Session not found'));
+    }
 
-  // 3. Якщо сесія існує, перевіряємо валідність рефреш токена
-  const isSessionTokenExpired =
-    new Date() > new Date(session.refreshTokenValidUntil);
+    const isSessionTokenExpired = new Date() > new Date(session.refreshTokenValidUntil);
 
-  // Якщо термін дії рефреш токена вийшов, повертаємо помилку
-  if (isSessionTokenExpired) {
-    return next(createHttpError(401, 'Session token expired'));
-  }
+    if (isSessionTokenExpired) {
+        return next(createHttpError(401, 'Session token expired'));
+    }
 
-  // 4. Якщо всі перевірки пройшли добре, видаляємо поточну сесію
-  await Session.deleteOne({
-    _id: req.cookies.sessionId,
-    refreshToken: req.cookies.refreshToken,
-  });
+    await Session.deleteOne({
+        _id: req.cookies.sessionId,
+        refreshToken: req.cookies.refreshToken,
+    });
 
-  // 5. Створюємо нову сесію та додаємо кукі
-  const newSession = await createSession(session.userId);
-  setSessionCookies(res, newSession);
+    const newSession = await createSession(session.userId);
 
-  res.status(200).json({
-    message: 'Session refreshed',
-  });
+    const user = await User.findById(session.userId);
+    if (!user) {
+        return next(createHttpError(404, 'User not found during session refresh'));
+    }
+    
+    return sendAuthResponse(req, res, user, newSession, 200);
 };
