@@ -16,6 +16,7 @@ import categoriesRoutes from './routes/categoriesRoutes.js';
 import ordersRoutes from './routes/ordersRoutes.js';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
+import { adminJs, router as adminRouter } from './admin.js';
 
 const PORT = process.env.PORT || 3030;
 const app = express();
@@ -40,6 +41,7 @@ app.use(
 );
 app.use(cookieParser());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use(adminJs.options.rootPath, adminRouter);
 
 // app.get('/test-error', () => {
 //   throw new Error('Simulated server error');

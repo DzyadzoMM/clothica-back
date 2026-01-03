@@ -1,6 +1,6 @@
 
 
-import { Order } from "../models/order.js";
+import Order  from "../models/order.js";
 
 export const getAllOrders = async (req, res) => {
     const orders = await Order.find(
@@ -53,4 +53,44 @@ export const createOrder = async (req, res, next) => {
 
 export const updateOrderStatus = async (req, res) => {
     res.status(501).json({ message: "Not Implemented" });
+};
+
+
+// 🟡 Отримати одне замовлення за ID
+export const getOrderById = async (req, res, next) => {
+  try {
+    const order = await Order.findById(req.params.id).populate('cart.goodId').populate('userData.userId');
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+    res.json(order);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// 🟠 Оновити замовлення
+export const updateOrder = async (req, res, next) => {
+  try {
+    const order = await Order.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+    res.json(order);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// 🔴 Видалити замовлення
+export const deleteOrder = async (req, res, next) => {
+  try {
+    const order = await Order.findByIdAndDelete(req.params.id);
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+    res.json({ message: 'Order deleted successfully' });
+  } catch (err) {
+    next(err);
+  }
 };

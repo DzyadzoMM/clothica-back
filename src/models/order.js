@@ -123,4 +123,4 @@ orderSchema.pre("save", function (next) {
     next();
 });
 
-export const Order = model("Order", orderSchema);
+export default model("Order", orderSchema);
