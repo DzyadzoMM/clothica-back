@@ -44,6 +44,10 @@ app.use(
 );
 app.use(cookieParser());
 app.use(passport.initialize());
+// ✅ твій keep-alive маршрут
+app.get("/ping", (req, res) => {
+  res.send("pong");
+});
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(adminJs.options.rootPath, adminRouter);
 
