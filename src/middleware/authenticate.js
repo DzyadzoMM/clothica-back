@@ -1,51 +1,38 @@
-
-import createHttpError from 'http-errors';
-import { Session } from '../models/session.js';
-import { User } from '../models/user.js';
+import jwt from "jsonwebtoken";
+import createHttpError from "http-errors";
+import { User } from "../models/user.js";
 
 export const authenticate = async (req, res, next) => {
-  let accessToken = null;
+  let token = null;
 
-  if (req.cookies.accessToken) {
-    accessToken = req.cookies.accessToken;
-  }
-
+  // 1. Перевіряємо Authorization Header
   const authHeader = req.headers.authorization;
-  
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    const headerToken = authHeader.split(' ')[1];
-    
-    if (headerToken) {
-      accessToken = headerToken;
+  if (authHeader?.startsWith("Bearer ")) {
+    token = authHeader.split(" ")[1];
+  }
+
+  // 2. Якщо немає — дивимось у cookies
+  if (!token && req.cookies.accessToken) {
+    token = req.cookies.accessToken;
+  }
+
+  if (!token) {
+    return next(createHttpError(401, "Missing access token"));
+  }
+
+  try {
+    // 3. Валідуємо токен
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // 4. Шукаємо користувача
+    const user = await User.findById(decoded.userId);
+    if (!user) {
+      return next(createHttpError(401, "User not found"));
     }
+
+    req.user = user;
+    next();
+  } catch (err) {
+    return next(createHttpError(401, "Invalid or expired token"));
   }
-
-  if (!accessToken) {
-    console.error('[AUTH MIDDLEWARE] Токен не знайдено ні в Cookies, ні в Authorization Header.');
-    return next(createHttpError(401, 'Missing access token'));
-  }
-  
-  const session = await Session.findOne({
-    accessToken: accessToken,
-  });
-
-  if (!session) {
-    return next(createHttpError(401, 'Session not found'));
-  }
-
-  const isAccessTokenExpired =
-    new Date() > new Date(session.accessTokenValidUntil);
-
-  if (isAccessTokenExpired) {
-    return next(createHttpError(401, 'Access token expired'));
-  }
-
-  const user = await User.findById(session.userId);
-
-  if (!user) {
-    return next(createHttpError(401));
-  }
-
-  req.user = user;
-  next();
 };

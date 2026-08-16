@@ -1,44 +1,40 @@
-// src/services/auth.js
+import jwt from "jsonwebtoken";
 
-import crypto from 'crypto';
-import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/time.js';
-import { Session } from '../models/session.js';
+const FIFTEEN_MINUTES = 15 * 60; // у секундах
+const ONE_DAY = 24 * 60 * 60;    // у секундах
 
-export const createSession = async (userId) => {
-  const accessToken = crypto.randomBytes(30).toString('base64');
-  const refreshToken = crypto.randomBytes(30).toString('base64');
+export const generateTokens = (userId) => {
+  const accessToken = jwt.sign(
+    { userId },
+    process.env.JWT_SECRET,
+    { expiresIn: FIFTEEN_MINUTES } // 15 хв
+  );
 
-  return Session.create({
-    userId,
-    accessToken,
-    refreshToken,
-    accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
-    refreshTokenValidUntil: new Date(Date.now() + ONE_DAY),
-  });
+  const refreshToken = jwt.sign(
+    { userId },
+    process.env.JWT_SECRET,
+    { expiresIn: ONE_DAY } // 1 день
+  );
+
+  return { accessToken, refreshToken };
 };
 
-export const setSessionCookies = (res, session) => {
-  const isProduction = process.env.NODE_ENV === 'production';
-
+export const setAuthCookies = (res, tokens) => {
+  const isProduction = process.env.NODE_ENV === "production";
   const cookieOptions = {
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? 'none' : 'lax',
-    path: '/',
+    sameSite: isProduction ? "none" : "lax",
+    path: "/",
   };
 
-  res.cookie('accessToken', session.accessToken, {
+  res.cookie("accessToken", tokens.accessToken, {
     ...cookieOptions,
-    maxAge: FIFTEEN_MINUTES,
+    maxAge: FIFTEEN_MINUTES * 1000,
   });
 
-  res.cookie('refreshToken', session.refreshToken, {
+  res.cookie("refreshToken", tokens.refreshToken, {
     ...cookieOptions,
-    maxAge: ONE_DAY,
-  });
-
-  res.cookie('sessionId', session._id, {
-    ...cookieOptions,
-    maxAge: ONE_DAY,
+    maxAge: ONE_DAY * 1000,
   });
 };
