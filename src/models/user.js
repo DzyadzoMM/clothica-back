@@ -4,9 +4,9 @@ const userSchema = new Schema(
   {
     firstName: { type: String, trim: true },
     lastName: { type: String, trim: true },
-    email: { type: String, trim: true, unique: true }, // для Google
-    googleId: { type: String, unique: true },          // для Google
-    phone: { type: String, trim: true, unique: true, required: false },
+    email: { type: String, trim: true, unique: true }, 
+    googleId: { type: String, unique: true, sparse: true },
+    phone: { type: String, trim: true, unique: true, sparse: true }, 
     password: { type: String, required: false },
     city: { type: String, trim: true },
     postOfficeNum: { type: String, trim: true },

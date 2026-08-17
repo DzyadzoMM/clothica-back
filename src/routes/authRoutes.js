@@ -8,6 +8,7 @@ import {
   logoutUser,
   refreshUserSession,
   googleAuthCallback,
+  googleMobileAuth,
 } from '../controllers/authController.js';
 import {
   registerUserSchema,
@@ -32,6 +33,9 @@ router.get("/api/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/", session: false }),
   googleAuthCallback
 );
+
+// Google auth (Mobile)
+router.post("/api/auth/google/mobile", googleMobileAuth);
 
 
 export default router;

@@ -1,19 +1,19 @@
 import jwt from "jsonwebtoken";
 
-const FIFTEEN_MINUTES = 15 * 60; // у секундах
-const ONE_DAY = 24 * 60 * 60;    // у секундах
+const FIFTEEN_MINUTES = 15 * 60; 
+const THIRTY_DAYS = 30 * 24 * 60 * 60;
 
 export const generateTokens = (userId) => {
   const accessToken = jwt.sign(
-    { userId },
-    process.env.JWT_SECRET,
-    { expiresIn: FIFTEEN_MINUTES } // 15 хв
+    { userId, type: "access" },
+    process.env.JWT_ACCESS_SECRET,
+    { expiresIn: "15m" }
   );
 
   const refreshToken = jwt.sign(
-    { userId },
-    process.env.JWT_SECRET,
-    { expiresIn: ONE_DAY } // 1 день
+    { userId, type: "refresh" },
+    process.env.JWT_REFRESH_SECRET,
+    { expiresIn: "30d" }
   );
 
   return { accessToken, refreshToken };
@@ -35,6 +35,6 @@ export const setAuthCookies = (res, tokens) => {
 
   res.cookie("refreshToken", tokens.refreshToken, {
     ...cookieOptions,
-    maxAge: ONE_DAY * 1000,
+    maxAge: THIRTY_DAYS * 1000,
   });
 };

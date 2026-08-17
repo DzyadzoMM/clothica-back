@@ -29,13 +29,13 @@ const swaggerDocument = YAML.load('./swagger.yaml');
 const allowedOrigins = [
   'http://localhost:3000',
   'https://clothica-front.vercel.app',
+  '*',
 ];
 
 app.set('trust proxy', 1);
 
 app.use(logger);
 app.use(express.json());
-// app.use(cors());
 app.use(
   cors({
     origin: allowedOrigins,
@@ -46,10 +46,6 @@ app.use(cookieParser());
 app.use(passport.initialize());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(adminJs.options.rootPath, adminRouter);
-
-// app.get('/test-error', () => {
-//   throw new Error('Simulated server error');
-// });
 
 app.use(authRoutes);
 app.use(goodsRoutes);
