@@ -3,12 +3,10 @@ import Order from "../models/order.js";
 export const getAllOrders = async (req, res, next) => {
     try {
         const userId = req.user ? (req.user._id || req.user.userId || req.user.id) : null;
-        const orders = await Order.find(
-            { "userData.userId": userId } 
-        );
+        const orders = await Order.find({ "userData.userId": userId })
+            .populate('cart.goodId'); 
         res.status(200).json(orders);
     } catch (error) {
-        console.error("Get all orders error:", error);
         next(error);
     }
 };
