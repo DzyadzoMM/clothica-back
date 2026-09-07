@@ -1,8 +1,13 @@
-
-
 import { Router } from 'express';
 import { celebrate } from 'celebrate';
-import { createOrder, getAllOrders, getOrderById, updateOrder, deleteOrder, } from '../controllers/ordersController.js';
+import { 
+    createOrder, 
+    getAllOrders, 
+    getOrderById, 
+    updateOrder, 
+    deleteOrder, 
+    updateOrderStatus // 1. Імпортуємо контролер зміни статусу
+} from '../controllers/ordersController.js';
 import { createOrderSchema } from '../validation/ordersValidation.js';
 import { authenticate } from '../middleware/authenticate.js';
 
@@ -24,6 +29,9 @@ router.get('/api/orders', authenticate, getAllOrders);
 
 router.get('/api/orders/:id', authenticate, getOrderById); 
 router.put('/api/orders/:id', authenticate, updateOrder); 
+
+router.patch('/api/orders/:orderId/status', authenticate, updateOrderStatus); 
+
 router.delete('/api/orders/:id', authenticate, deleteOrder);
 
 export default router;

@@ -1,4 +1,5 @@
 import Order from "../models/order.js";
+import { sendPushNotification } from '../utils/pushNotification.js';
 
 export const getAllOrders = async (req, res, next) => {
     try {
@@ -53,8 +54,36 @@ export const createOrder = async (req, res, next) => {
     }
 };
 
-export const updateOrderStatus = async (req, res) => {
-    res.status(501).json({ message: "Not Implemented" });
+export const updateOrderStatus = async (req, res, next) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body; 
+
+    const order = await Order.findById(orderId).populate('userData.userId');
+    
+    if (!order) {
+      return res.status(404).json({ message: 'Замовлення не знайдено' });
+    }
+
+    const oldStatus = order.status;
+    order.status = status;
+    await order.save();
+
+    const targetUser = order.userData?.userId;
+
+    if (oldStatus !== status && targetUser && targetUser.pushToken) {
+      await sendPushNotification(
+        targetUser.pushToken,
+        'Оновлення замовлення 📦',
+        `Статус вашого замовлення #${order._id} змінено на: "${status}"`,
+        { orderId: order._id.toString() }
+      );
+    }
+
+    res.status(200).json({ message: 'Статус успішно оновлено', order });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // 🟡 Отримати одне замовлення за ID
