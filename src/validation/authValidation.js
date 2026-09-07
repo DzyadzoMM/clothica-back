@@ -7,6 +7,7 @@ export const registerUserSchema = {
       .pattern(/^\+380\d{9}$/)
       .required(),
     password: Joi.string().min(8).required(),
+    email: Joi.string().allow('', null).optional()
   }),
 };
 export const loginUserSchema = {
