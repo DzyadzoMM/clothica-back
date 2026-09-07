@@ -1,12 +1,16 @@
+import Order from "../models/order.js";
 
-
-import Order  from "../models/order.js";
-
-export const getAllOrders = async (req, res) => {
-    const orders = await Order.find(
-        { "userData.userId": req.user._id } 
-    );
-    res.status(200).json(orders);
+export const getAllOrders = async (req, res, next) => {
+    try {
+        const userId = req.user ? (req.user._id || req.user.userId || req.user.id) : null;
+        const orders = await Order.find(
+            { "userData.userId": userId } 
+        );
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error("Get all orders error:", error);
+        next(error);
+    }
 };
 
 export const createOrder = async (req, res, next) => {
@@ -17,7 +21,7 @@ export const createOrder = async (req, res, next) => {
             userData 
         } = req.body;
 
-       const userId = req.user ? (req.user._id || req.user.userId || req.user.id) : null; 
+        const userId = req.user ? (req.user._id || req.user.userId || req.user.id) : null; 
 
         let calculatedOrderTotal = 0;
 
@@ -54,7 +58,6 @@ export const createOrder = async (req, res, next) => {
 export const updateOrderStatus = async (req, res) => {
     res.status(501).json({ message: "Not Implemented" });
 };
-
 
 // 🟡 Отримати одне замовлення за ID
 export const getOrderById = async (req, res, next) => {
