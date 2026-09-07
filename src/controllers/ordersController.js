@@ -1,5 +1,5 @@
 import Order from "../models/order.js";
-import { sendPushNotification } from '../utils/pushNotification.js';
+import { sendPushNotification } from '../../utils/pushNotification.js';
 
 export const getAllOrders = async (req, res, next) => {
     try {
