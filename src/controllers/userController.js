@@ -42,3 +42,20 @@ export const updateCurrentUser = async (req, res) => {
     res.status(500).json({ message: 'Помилка сервера' });
   }
 };
+
+export const updatePushToken = async (req, res, next) => {
+  try {
+    const { pushToken } = req.body;
+    const userId = req.user._id;
+
+    await User.findByIdAndUpdate(
+      userId,
+      { pushToken },
+      { new: true }
+    );
+
+    res.status(200).json({ message: 'Push token saved successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
