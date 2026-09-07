@@ -10,6 +10,7 @@ const userSchema = new Schema(
     password: { type: String, required: false },
     city: { type: String, trim: true },
     postOfficeNum: { type: String, trim: true },
+    pushToken: { type: String, default: null },
   },
   { timestamps: true, versionKey: false },
 );
