@@ -14,6 +14,7 @@ export const updateCurrentUser = async (req, res) => {
       'firstName',
       'lastName',
       'phone',
+      'email',
       'city',
       'postOfficeNum',
     ];
