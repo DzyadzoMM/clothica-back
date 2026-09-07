@@ -17,7 +17,7 @@ export const createOrder = async (req, res, next) => {
             userData 
         } = req.body;
 
-        const userId = req.user ? req.user._id : null; 
+       const userId = req.user ? (req.user._id || req.user.userId || req.user.id) : null; 
 
         let calculatedOrderTotal = 0;
 
