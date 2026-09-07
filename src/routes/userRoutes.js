@@ -10,6 +10,6 @@ const router = Router();
 
 router.get('/api/users/me', authenticate, getCurrentUser);
 router.patch('/api/users/me', authenticate, updateCurrentUser);
-router.post('/api/users/push-token', authenticate, updatePushToken);
+router.patch('/api/users/push-token', authenticate, updatePushToken);
 
 export default router;
