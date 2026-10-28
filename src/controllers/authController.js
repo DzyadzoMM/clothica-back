@@ -50,6 +50,7 @@ export const logoutUser = async (req, res) => {
 // Refresh
 export const refreshUserSession = async (req, res, next) => {
   const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
+  console.log('=== REFRESH TOKEN RECEIVED FROM CLIENT ===', refreshToken);
   if (!refreshToken) return next(createHttpError(400, "Missing refresh token"));
 
   try {
