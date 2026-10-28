@@ -1,9 +1,10 @@
 import bcrypt from "bcrypt";
 import createHttpError from "http-errors";
+import jwt from "jsonwebtoken"; 
 import { User } from "../models/user.js";
 import { generateTokens, setAuthCookies } from "../services/auth.js";
 
-// Helper
+
 const sendAuthResponse = (req, res, user, tokens, status) => {
   const isMobileClient = req.headers["x-client-type"] === "mobile";
   if (isMobileClient) {
@@ -14,7 +15,6 @@ const sendAuthResponse = (req, res, user, tokens, status) => {
   }
 };
 
-// Register
 export const registerUser = async (req, res, next) => {
   const { phone, password, firstName } = req.body;
   const existingUser = await User.findOne({ phone });
@@ -27,7 +27,6 @@ export const registerUser = async (req, res, next) => {
   return sendAuthResponse(req, res, newUser, tokens, 201);
 };
 
-// Login
 export const loginUser = async (req, res, next) => {
   const { phone, password } = req.body;
   const user = await User.findOne({ phone });
@@ -40,17 +39,16 @@ export const loginUser = async (req, res, next) => {
   return sendAuthResponse(req, res, user, tokens, 200);
 };
 
-// Logout
 export const logoutUser = async (req, res) => {
   res.clearCookie("accessToken");
   res.clearCookie("refreshToken");
   return res.status(204).send();
 };
 
-// Refresh
 export const refreshUserSession = async (req, res, next) => {
   const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
   console.log('=== REFRESH TOKEN RECEIVED FROM CLIENT ===', refreshToken);
+  
   if (!refreshToken) return next(createHttpError(400, "Missing refresh token"));
 
   try {
@@ -59,13 +57,20 @@ export const refreshUserSession = async (req, res, next) => {
     if (!user) return next(createHttpError(404, "User not found"));
 
     const tokens = generateTokens(user._id);
-    return sendAuthResponse(req, res, user, tokens, 200);
-  } catch {
+
+    const isMobileClient = req.headers["x-client-type"] === "mobile";
+    if (isMobileClient) {
+      return res.status(200).json(tokens);
+    } else {
+      setAuthCookies(res, tokens);
+      return res.status(200).json({ message: "Token refreshed successfully" });
+    }
+  } catch (error) {
+    console.error('Refresh token verification failed:', error.message);
     return next(createHttpError(401, "Invalid refresh token"));
   }
 };
 
-// Google callback
 export const googleAuthCallback = async (req, res) => {
   const tokens = generateTokens(req.user._id);
   return sendAuthResponse(req, res, req.user, tokens, 200);
