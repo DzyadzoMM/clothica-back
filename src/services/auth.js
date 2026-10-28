@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const FIFTEEN_MINUTES = 15 * 60; 
+const FIFTEEN_MINUTES = 60; 
 const FIFTEEN_DAYS = 15*24 * 60 * 60;    
 
 export const generateTokens = (userId) => {
