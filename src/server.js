@@ -18,7 +18,7 @@ import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import { adminJs, router as adminRouter } from './admin.js';
 import passport from "passport";
-import "./config/passport.js"; // файл де ми описали GoogleStrategy
+import "./config/passport.js"; 
 
 
 const PORT = process.env.PORT || 3030;
