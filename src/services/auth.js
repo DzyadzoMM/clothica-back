@@ -7,13 +7,13 @@ export const generateTokens = (userId) => {
   const accessToken = jwt.sign(
     { userId },
     process.env.JWT_SECRET,
-    { expiresIn: FIFTEEN_MINUTES } 
+    { expiresIn: ONE_DAY } 
   );
 
   const refreshToken = jwt.sign(
     { userId },
     process.env.JWT_SECRET,
-    { expiresIn: FIFTEEN_DAYS } 
+    { expiresIn: ONE_MONTH } 
   );
 
   return { accessToken, refreshToken };
@@ -30,11 +30,11 @@ export const setAuthCookies = (res, tokens) => {
 
   res.cookie("accessToken", tokens.accessToken, {
     ...cookieOptions,
-    maxAge: FIFTEEN_MINUTES * 1000,
+    maxAge: ONE_DAY * 1000,
   });
 
   res.cookie("refreshToken", tokens.refreshToken, {
     ...cookieOptions,
-    maxAge: FIFTEEN_DAYS * 1000,
+    maxAge: ONE_MONTH * 1000,
   });
 };
