@@ -67,13 +67,14 @@ app.post('/api/payments/create-liqpay', (req, res) => {
     }
 
     const params = {
+      public_key: PUBLIC_KEY, // ⬅️ ОСЬ ЦЕ ОБОВ'ЯЗКОВО ТРЕБА ДОДАТИ!
       action: 'pay',
       amount: amount, 
-      currency: 'UAH', // У пісочниці використовуємо гривні
+      currency: 'UAH',
       description: `Оплата замовлення #${orderId || 'test'}`,
       order_id: orderId || `order_${Date.now()}`,
       version: '3',
-      sandbox: 1, // <--- Вмикає тестовий режим
+      sandbox: 1, 
       result_url: 'https://clothica-back-2.onrender.com/api/payments/success',
     };
 
