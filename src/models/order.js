@@ -116,6 +116,9 @@ const orderSchema = new Schema(
 
 orderSchema.pre("save", function (next) {
     if (this.isNew) {
+         if (this.paymentMethod === 'online_pay') {
+            this.status = 'Оплачено';
+         }
         const now = new Date();
         const day = String(now.getDate()).padStart(2, "0");
         const month = String(now.getMonth() + 1).padStart(2, "0");
