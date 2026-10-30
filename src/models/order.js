@@ -1,5 +1,3 @@
-
-
 import { model, Schema } from "mongoose";
 import { STATUS } from "../constants/status.js";
 import { SIZES } from "../constants/sizes.js";
