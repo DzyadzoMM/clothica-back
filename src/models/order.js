@@ -65,6 +65,12 @@ const orderSchema = new Schema(
             required: true,
             default: "У процесі",
         },
+        paymentMethod: {
+            type: String,
+            enum: ['cash_on_delivery', 'online_pay'],
+            required: true,
+            default: 'cash_on_delivery',
+        },
         userData: {
             userId: {
                 type: Schema.Types.ObjectId,
