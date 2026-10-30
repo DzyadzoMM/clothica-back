@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
-const FIFTEEN_MINUTES = 60; 
-const FIFTEEN_DAYS = 15*24 * 60 * 60;    
+const ONE_DAY = 24 * 60 * 60;         // 1 день для access token (86400 секунд)
+const ONE_MONTH = 30 * 24 * 60 * 60;  // 1 місяць (30 днів) для refresh token (2592000 секунд)    
 
 export const generateTokens = (userId) => {
   const accessToken = jwt.sign(
