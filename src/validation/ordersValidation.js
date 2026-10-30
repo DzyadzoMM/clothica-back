@@ -21,6 +21,10 @@ export const createOrderSchema = {
         cart: Joi.array().items(cartItemJoiObject).min(1).required(),
         
         status: Joi.string().valid(...STATUS).optional(), 
+
+        paymentMethod: Joi.string()
+            .valid('cash_on_delivery', 'online_pay')
+            .optional(),
         
         userData: Joi.object({
             firstName: Joi.string().trim().required(),
