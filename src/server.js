@@ -18,6 +18,7 @@ import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import { adminJs, router as adminRouter } from './admin.js';
 import passport from "passport";
+import crypto from 'crypto';
 import "./config/passport.js"; 
 
 
