@@ -1,11 +1,9 @@
 export const STATUS = [
     "У процесі",
+    "Оплачено",
     "Комплектується",
     "Виконано",
     "Скасовано"
 ];
 
-// Processing
-// In progress
-// Completed
-// Cancelled
+
