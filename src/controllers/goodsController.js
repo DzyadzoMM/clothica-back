@@ -25,18 +25,6 @@ export const getAllGoods = async (req, res, next) => {
       filter.category = categoryId;
     }
 
-    // if (size) {
-    //   let sizesArray = [];
-
-    //   if (Array.isArray(size)) {
-    //     sizesArray = size;
-    //   } else {
-    //     sizesArray = [size];
-    //   }
-    //   const normalizedSizes = sizesArray.map((s) => s.toUpperCase());
-    //   filter.size = { $in: normalizedSizes };
-    // }
-
     if (size) {
       let sizesArray = [];
       if (Array.isArray(size)) {
@@ -46,15 +34,6 @@ export const getAllGoods = async (req, res, next) => {
       }
       filter.size = { $in: sizesArray.map((s) => s.toUpperCase()) };
     }
-
-    // if (size) {
-    //   const arr = Array.isArray(size) ? size : size.split(',');
-    //   console.log('RAW sizes:', size);
-    //   console.log('Parsed sizes array:', arr);
-
-    //   const normalizedSizes = arr.map((s) => s.toUpperCase().trim());
-    //   filter.size = { $in: normalizedSizes };
-    // }
 
     if (minPrice || maxPrice) {
       filter['price.value'] = {};
@@ -95,4 +74,20 @@ export const getGoodById = async (req, res, next) => {
   }
 
   res.status(200).json(good);
+};
+
+export const getNewestGoods = async (req, res, next) => {
+  try {
+    const limit = Number(req.query.limit) || 4;
+    
+    const goods = await Good.find()
+      .sort({ _id: -1 }) 
+      .limit(limit);
+
+    res.status(200).json({
+      goods,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
